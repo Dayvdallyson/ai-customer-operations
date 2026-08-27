@@ -13,4 +13,3 @@ async def chat(
 ):
   answer = await chat_service.ask(request.message)
   return ChatResponse(answer=answer)
-

@@ -1,8 +1,14 @@
-from app.infrastructure.llm.base import LLMClient
+from app.application.agent.state import AgentState
 
 class ChatService:
-  def __init__(self, llm_client: LLMClient):
-    self._llm_client = llm_client
+    def __init__(self, agent_graph):
+        self._agent_graph = agent_graph
 
-  async def ask(self, message: str) -> str:
-    return await self._llm_client.generate(message)
+    async def ask(self, message: str) -> str:
+        initial_state: AgentState = {
+            "messages": [{"role": "user", "content": message}],
+            "stop_reason": None,
+            "answer": None,
+        }
+        final_state = await self._agent_graph.ainvoke(initial_state)
+        return final_state["answer"]
